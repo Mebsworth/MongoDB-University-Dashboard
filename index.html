@@ -1,0 +1,126 @@
+ <html>
+ <head>
+ 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+ 	<script type="text/javascript" src="data.js"></script>
+
+ 	<!-- Bootstrap -->
+    <link href="dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="dist/js/bootstrap.min.js"></script>
+
+ 	<script type="text/javascript">
+
+
+
+	 google.load("visualization", "1", {packages:["corechart"]});
+	 google.setOnLoadCallback(drawChart);
+
+	 var options_grouped = {
+		  title: "Number of Correct & Completed Homework Problems",
+		  colors: ['#3b5998', '#0099cc'],
+		  width: 700,
+		  height: 400,
+		  bar: {groupWidth: "95%"},
+		  legend: { position: "none" },
+		};
+
+	var options_stacked = {
+		  title: "Number of Correct & Completed Homework Problems",
+		  colors: ['#3b5998', '#0099cc'],
+		  width: 700,
+		  height: 400,
+		  bar: {groupWidth: "95%"},
+		  legend: { position: "none" },
+		  isStacked: true,
+		};
+	 
+	 function drawChart() {
+		
+		var data = new google.visualization.DataTable();
+		data.addColumn('number', 'Student');
+		data.addColumn('number', 'Correct Problems');
+		data.addColumn('number', 'Completed Problems');
+
+		// data.addRows([
+		//   [{v: 1, f: 'Student 1'}, 1, .25],
+		//   [{v: 2, f: 'Student 2'}, 2, .5],
+		//   [{v: 3, f:'Student 3'}, 3, 1],
+		//   [{v: 4, f: 'Student 4'}, 4, 2.25],
+		//   [{v: 5, f: 'Student 5'}, 5, 2.25],
+		//   [{v: 6, f: 'Student 6'}, 6, 3],
+		//   [{v: 7, f: 'Student 7'}, 7, 4],
+		//   [{v: 8, f: 'Student 8'}, 8, 5.25],
+		//   [{v: 9, f: 'Student 9'}, 9, 7.5],
+		//   [{v: 10, f: 'Student 10'}, 10, 10],
+		// ]);
+
+ 		data.addRows(dat);
+
+		// var view = new google.visualization.DataView(data);
+		// view.setColumns([0, 1,
+		//                  { calc: "stringify",
+		//                    sourceColumn: 1,
+		//                    type: "string",
+		//                    role: "annotation" },
+		//                  2]);
+		var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_grouped"));
+		chart.draw(data, options_grouped);
+
+		var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_stacked"));
+		chart.draw(data, options_stacked);
+  }
+
+  
+  </script>
+</head>
+<body>
+
+	<div class="container">
+
+		<div><h1>Dashboard</h1></div>
+		<div class="row">
+			<div class="col-md-8">
+				<div class="panel panel-default">
+		  			<div class="panel-body">
+		    			<div id="columnchart_grouped" style="width: 800px; height: 400px;"></div>
+		  			</div>
+				</div>
+			</div>
+			
+		</div> <!-- row 1 -->
+		<div class="row">
+			<div class="col-md-8">
+				<div class="panel panel-default">
+		  			<div class="panel-body">
+		    			<div id="columnchart_stacked" style="width: 800px; height: 400px;"></div>
+		  			</div>
+				</div>
+			</div>
+			
+		</div>
+		<div class="row">
+		</div>
+		<div class="row">
+		</div>
+
+		
+		
+		
+  		
+	</div>
+  
+
+  <div>
+  	<p>
+
+
+
+  		Ranking by Grade</p>
+  </div>
+
+ 
+</body>
+
+</html>
