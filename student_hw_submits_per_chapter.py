@@ -18,7 +18,7 @@ def find_all_students():
 def find_num_hw_per_chapter():
     db.overall_sample_set.aggregate([
         {"$unwind":"$events"},
-        {"$match":{"events.vertical_type":"problem", "events.event_type":"submit", "events.lesson_format":"homework"}},
+        {"$match":{"events.vertical_type":"problem", "events.event_type":"submit", "events.lesson_format":"homework", "events.correct":True}},
         {"$group": {"_id": { "student_id": "$student_id", "chapter": "$events.chapter" }, "num_hw_submits":{"$sum":1}}},
         {"$out":"student_num_hw_submits_per_chapter"}
         ])
