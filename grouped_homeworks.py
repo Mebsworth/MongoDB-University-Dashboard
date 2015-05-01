@@ -28,13 +28,13 @@ def group_counter():
 
     for doc in cursor:
         if 0 <= doc['num_homeworks'] < 5 :
-            counter['0-4'] = counter.get('0-4') + 1
+            counter['0-4'] = counter['0-4'] + 1
         elif 5 <= doc['num_homeworks'] < 10 :
-            counter['5-9'] = counter.get('5-9') + 1
+            counter['5-9'] = counter['5-9'] + 1
         elif 10 <= doc['num_homeworks'] < 15 :
-            counter['10-14'] = counter.get('10-14') + 1
+            counter['10-14'] = counter['10-14'] + 1
         else :
-            counter['15-22'] = counter.get('15-22') + 1
+            counter['15-22'] = counter['15-22'] + 1
 
     file.write("var grouped_homeworks_data = {")
     file.write("'0-4':" + str(counter['0-4']) + ", '5-9':" + str(counter['5-9']) + 
