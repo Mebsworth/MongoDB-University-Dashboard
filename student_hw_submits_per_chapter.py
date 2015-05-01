@@ -63,6 +63,8 @@ def chapter_string_parser(s):
         return "Chapter_3"
     elif s == "Aggregation":
         return "Chapter_5"
+    elif s == "Final_Exam":
+        return "Final Exam"
     else:
         print s
 

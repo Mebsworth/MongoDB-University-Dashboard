@@ -71,6 +71,8 @@ def chapter_string_parser(s):
         return "Chapter_3"
     elif s == "Aggregation":
         return "Chapter_5"
+    elif s == "Final_Exam":
+        return "Final Exam"
     else:
         print s
 
@@ -101,7 +103,7 @@ def find_student_info(student_id, chapters):
         if (chapter):
             d[chapter]["incorrect"] = d[chapter]["incorrect"] + 1
 
-    if student_id == 180925:
+    if student_id == 176559:
         print sum
 
     for key in d:
