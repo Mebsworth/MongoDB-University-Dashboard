@@ -7,14 +7,14 @@ connection = MongoClient()
 #get a handle to the track database
 db=connection.track
 
-file = open("data2.js", "a")
+file = open("data/grouped_homeworks.js", "w")
 
 # create new collection of number of homeworks per student
 def group_assignments():
 
     db.overall_sample_set.aggregate([
         {"$unwind":"$events"},
-        {"$match":{"events.correct":True, "events.vertical_type":"problem", "events.lesson_format":"homework"}},
+        {"$match":{"events.event_type":"submit", "events.vertical_type":"problem", "events.lesson_format":"homework"}},
         {"$group": {"_id": "$student_id", "num_homeworks":{"$sum":1}}},
         {"$out":"group_assignments"}
         ])
@@ -36,6 +36,10 @@ def group_counter():
         else :
             counter['15-22'] = counter.get('15-22') + 1
 
+    file.write("var grouped_homeworks_data = {")
+    file.write("'0-4':" + str(counter['0-4']) + ", '5-9':" + str(counter['5-9']) + 
+        ", '10-14':"+ str(counter['10-14']) + ", '15-22':" + str(counter['15-22']))
+    file.write("};")
     print counter
 
 group_counter()

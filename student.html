@@ -7,6 +7,8 @@
     <script type="text/javascript" src="data/student_num_assignments_completed.js"></script>
     <script type="text/javascript" src="data/student_quiz_submits_per_chapter.js"></script>
     <script type="text/javascript" src="data/student_quiz.js"></script>
+    <script type="text/javascript" src="data/grouped_homeworks.js"></script>
+    
     
 
     <!-- Bootstrap -->
@@ -54,16 +56,14 @@
                             <div class="col-md-6"><div id="hw_columnchart_grouped" style="width: 50%; height: 400px;"></div></div>
                             <div class="col-md-6"><div id="hw_chapter_chart" style="width: 50%; height: 400px;"></div></div>
                         </div>
-                        
-                       
+                        <div class="row">
+                            <div id="hw_grouped_chart" style="width: 50%; height: 400px; left:25%;"></div>
+                        </div>
                     </div>
-
                 </div>
             </div>
-            
         </div>
-        <div class="row">
-        </div>
+        
         <div class="row">
         </div>
     </div>
@@ -76,9 +76,10 @@
     //var student_id = 183469;
     //var student_id = 135421;
     //var student_id = 177251; // 3
-    var student_id = 176559; // 3
+    //var student_id = 176559; // 3
 
-    var student_id =171708;
+    //var student_id =171708;
+    var student_id = 111912;
      
 
     
@@ -101,7 +102,6 @@
             height: 400,
             bar: {groupWidth: "95%"},
             legend: { position: "right" },
-            vAxis: {ticks: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]}
         };
         
         var data = new google.visualization.DataTable();
@@ -134,7 +134,7 @@
             height: 400,
             bar: {groupWidth: "95%"},
             legend: { position: "right" },
-            vAxis: {ticks: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]}
+            
 
         };
         
@@ -162,11 +162,10 @@
     function drawQuizChapterChart() {
         var options = {
             title: "Quiz Performance Per Chapter",
-            colors: ['#3b5998', '#0099cc'],
+            colors: ['#FFA54F', '#FF6103'],
             width: 550,
             height: 400,
             legend: { position: "right" },
-            vAxis: {ticks: [1,2,3,4,5]},
         };
 
         var data = new google.visualization.DataTable();
@@ -199,11 +198,11 @@
     function drawHWChapterChart() {
         var options = {
             title: "HW Performance Per Chapter",
-            colors: ['#3b5998', '#0099cc'],
+            colors: ['#FFA54F', '#FF6103'],
             width: 550,
             height: 400,
             legend: { position: "right" },
-            vAxis: {ticks: [1,2,3,4,5]}
+            
         };
 
         var data = new google.visualization.DataTable();
@@ -228,6 +227,46 @@
         chart.draw(data, options);
 
     }
+
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawGroupPieChart);
+
+    function drawGroupPieChart() {
+
+        var options = {
+            title: "Number of Students at Each Level of Homework Progress",
+            colors: ['#00CD66','#FF6103','#3b5998', '#0099cc', ],
+            width: 550,
+            height: 400,
+            legend: { position: "right" },
+            
+        };
+
+        var data = google.visualization.arrayToDataTable([
+            ['Number of Submissions', 'Number of Students'],
+            ['0-4 attempted', grouped_homeworks_data['0-4']],
+            ['5-9 attempted', grouped_homeworks_data['5-9']],
+            ['10-14 attempted', grouped_homeworks_data['10-14']],
+            ['15-22 attempted', grouped_homeworks_data['15-22']],
+            ]);
+        // var data = new google.visualization.DataTable();
+        // data.addColumn('string', 'Number of Submissions');
+        // data.addColumn('number', 'Number of Students');
+
+        // var input = [
+        //   ['0-4', grouped_homeworks_data['0-4']], 
+        //   ['5-9', grouped_homeworks_data['5-9']],
+        //   ['10-14', grouped_homeworks_data['10-14']],
+        //   ['15-22', grouped_homeworks_data['15-22']],
+        //   ];
+
+        //data.addRows(input);
+
+        var chart = new google.visualization.PieChart(document.getElementById("hw_grouped_chart"));
+        chart.draw(data, options);
+
+    }
+
 
   
   </script>

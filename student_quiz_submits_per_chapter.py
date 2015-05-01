@@ -27,6 +27,8 @@ def find_correct_quizzes_per_chapter():
         {"$out":"student_correct_quiz_submits_per_chapter"}
         ])
 
+
+
 def find_incorrect_quizzes_per_chapter():
     db.overall_sample_set.aggregate([
         {"$unwind":"$events"},
@@ -78,8 +80,6 @@ def chapter_string_parser(s):
 
 
 def find_student_info(student_id, chapters):
-    cursor_correct = db.student_correct_quiz_submits_per_chapter.find({"_id.student_id":student_id})
-    cursor_incorrect = db.student_incorrect_quiz_submits_per_chapter.find({"_id.student_id":student_id})
 
     file.write(str(student_id) +": {")
 
@@ -91,19 +91,29 @@ def find_student_info(student_id, chapters):
   
     sum = 0
 
+    cursor_correct = db.student_correct_quiz_submits_per_chapter.find({"_id.student_id":student_id})
+
     for doc in cursor_correct:
+        if student_id == 111912:
+            print doc
         sum = sum + 1
         chapter = chapter_string_parser(doc['_id']['chapter'])
         if (chapter):
-            d[chapter]["correct"] = d[chapter]["correct"] + 1
+            d[chapter]["correct"] = d[chapter]["correct"] + doc['num_quiz_submits']
+        else:
+            print chapter
+
+    cursor_incorrect = db.student_incorrect_quiz_submits_per_chapter.find({"_id.student_id":student_id})
 
     for doc in cursor_incorrect:
+        if student_id == 111912:
+            print doc
         sum = sum + 1
         chapter = chapter_string_parser(doc['_id']['chapter'])
         if (chapter):
-            d[chapter]["incorrect"] = d[chapter]["incorrect"] + 1
+            d[chapter]["incorrect"] = d[chapter]["incorrect"] + + doc['num_quiz_submits']
 
-    if student_id == 176559:
+    if student_id == 111912:
         print sum
 
     for key in d:
