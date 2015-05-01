@@ -1,7 +1,6 @@
  <html>
  <head>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript" src="input_data.js"></script>
 
     <script type="text/javascript" src="data/student_homework.js"></script>
     <script type="text/javascript" src="data/student_hw_submits_per_chapter.js"></script>
@@ -27,26 +26,38 @@
 
         <div><h1 id="student_id">Student Dashboard:</h1></div>
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">Quiz</h3>
                       </div>
                     <div class="panel-body">
-                        <div id="quiz_columnchart_grouped" style="width: 800px; height: 400px;"></div>
+                        <div class="row">
+                            <div class="col-md-6"><div id="quiz_columnchart_grouped" style="width: 50%; height: 400px;"></div></div>
+                            <div class="col-md-6"><div id="quiz_chapter_chart" style="width: 50%; height: 400px;"></div></div>
+                        </div>
+                        
+                        
                     </div>
                 </div>
             </div>
+            
         </div> <!-- row 1 -->
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">Homework</h3>
                       </div>
                     <div class="panel-body">
-                        <div id="hw_columnchart_grouped" style="width: 800px; height: 400px;"></div>
+                        <div class="row">
+                            <div class="col-md-6"><div id="hw_columnchart_grouped" style="width: 50%; height: 400px;"></div></div>
+                            <div class="col-md-6"><div id="hw_chapter_chart" style="width: 50%; height: 400px;"></div></div>
+                        </div>
+                        
+                       
                     </div>
+
                 </div>
             </div>
             
@@ -61,7 +72,14 @@
 
 <script type="text/javascript">
 
-    var student_id = 180925;
+    //var student_id = 188652;
+    //var student_id = 183469;
+    //var student_id = 135421;
+    //var student_id = 177251; // 3
+    var student_id = 176559; // 3
+     
+
+    
 
     var s = document.getElementById("student_id");
     s.innerHTML = s.innerHTML + student_id;
@@ -70,18 +88,18 @@
     console.log("ID " + student_id);
 
     google.load("visualization", "1", {packages:["corechart", "bar"]});
-    google.setOnLoadCallback(drawQuizChart);
-
+    google.setOnLoadCallback(drawQuizBarChart);
      
-    function drawQuizChart() {
+    function drawQuizBarChart() {
 
         var options_grouped = {
             title: "Comparing Student to Course Average",
             colors: ['#3b5998', '#0099cc'],
-            width: 500,
+            width: 550,
             height: 400,
             bar: {groupWidth: "95%"},
             legend: { position: "right" },
+            vAxis: {ticks: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]}
         };
         
         var data = new google.visualization.DataTable();
@@ -103,17 +121,19 @@
     }
 
     google.load("visualization", "1", {packages:["corechart", "bar"]});
-    google.setOnLoadCallback(drawHWChart);
+    google.setOnLoadCallback(drawHWBarChart);
 
-    function drawHWChart() {
+    function drawHWBarChart() {
 
         var options_grouped = {
             title: "Comparing Student to Course Average",
             colors: ['#3b5998', '#0099cc'],
-            width: 500,
+            width: 550,
             height: 400,
             bar: {groupWidth: "95%"},
             legend: { position: "right" },
+            vAxis: {ticks: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]}
+
         };
         
         var data = new google.visualization.DataTable();
@@ -132,6 +152,77 @@
 
         var chart = new google.visualization.ColumnChart(document.getElementById("hw_columnchart_grouped"));
         chart.draw(data, options_grouped);
+    }
+
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawQuizChapterChart);
+
+    function drawQuizChapterChart() {
+        var options = {
+            title: "Quiz Performance Per Chapter",
+            colors: ['#3b5998', '#0099cc'],
+            width: 550,
+            height: 400,
+            legend: { position: "right" },
+            vAxis: {ticks: [1,2,3,4,5]},
+        };
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Chapter');
+        data.addColumn('number', 'Correct Quiz Submissions');
+        data.addColumn('number', 'Incorrect Quiz Submissions ');
+
+        var student = student_quiz_submits_per_chapter_data[student_id]
+
+        var input = [
+          ['Ch 1', student['Chapter_1']['correct'], student['Chapter_1']['incorrect']], 
+          ['Ch 2', student['Chapter_2']['correct'], student['Chapter_2']['incorrect']],
+          ['Ch 3', student['Chapter_3']['correct'], student['Chapter_3']['incorrect']],
+          ['Ch 4', student['Chapter_4']['correct'], student['Chapter_4']['incorrect']],
+          ['Ch 5', student['Chapter_5']['correct'], student['Chapter_5']['incorrect']],
+          ['Ch 6', student['Chapter_6']['correct'], student['Chapter_6']['incorrect']],
+          ['Ch 7', student['Chapter_7']['correct'], student['Chapter_7']['incorrect']]];
+
+        data.addRows(input);
+
+        var chart = new google.visualization.ColumnChart(document.getElementById("quiz_chapter_chart"));
+        chart.draw(data, options);
+
+    }
+
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawHWChapterChart);
+
+    function drawHWChapterChart() {
+        var options = {
+            title: "HW Performance Per Chapter",
+            colors: ['#3b5998', '#0099cc'],
+            width: 550,
+            height: 400,
+            legend: { position: "right" },
+            vAxis: {ticks: [1,2,3,4,5]}
+        };
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Chapter');
+        data.addColumn('number', 'Correct HW Submissions');
+        data.addColumn('number', 'Incorrect HW Submissions ');
+
+        var student = student_hw_submits_per_chapter_data[student_id]
+
+        var input = [
+          ['Ch 1', student['Chapter_1']['correct'], student['Chapter_1']['incorrect']], 
+          ['Ch 2', student['Chapter_2']['correct'], student['Chapter_2']['incorrect']],
+          ['Ch 3', student['Chapter_3']['correct'], student['Chapter_3']['incorrect']],
+          ['Ch 4', student['Chapter_4']['correct'], student['Chapter_4']['incorrect']],
+          ['Ch 5', student['Chapter_5']['correct'], student['Chapter_5']['incorrect']],
+          ['Ch 6', student['Chapter_6']['correct'], student['Chapter_6']['incorrect']]];
+
+        data.addRows(input);
+
+        var chart = new google.visualization.ColumnChart(document.getElementById("hw_chapter_chart"));
+        chart.draw(data, options);
+
     }
 
   

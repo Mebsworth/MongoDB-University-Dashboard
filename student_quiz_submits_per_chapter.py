@@ -15,12 +15,28 @@ def find_all_students():
     students = db.overall_sample_set.distinct("student_id")
     return students #5395
 
-def find_num_quizzes_per_chapter():
+def find_correct_quizzes_per_chapter():
     db.overall_sample_set.aggregate([
         {"$unwind":"$events"},
-        {"$match":{"events.vertical_type":"problem", "events.event_type":"submit", "events.lesson_format":"lesson", "events.correct":True}},
+        {"$match":{
+            "events.vertical_type":"problem", 
+            "events.event_type":"submit", 
+            "events.lesson_format":"lesson", 
+            "events.correct":True}},
         {"$group": {"_id": { "student_id": "$student_id", "chapter": "$events.chapter" }, "num_quiz_submits":{"$sum":1}}},
-        {"$out":"student_num_quiz_submits_per_chapter"}
+        {"$out":"student_correct_quiz_submits_per_chapter"}
+        ])
+
+def find_incorrect_quizzes_per_chapter():
+    db.overall_sample_set.aggregate([
+        {"$unwind":"$events"},
+        {"$match":{
+            "events.vertical_type":"problem", 
+            "events.event_type":"submit", 
+            "events.lesson_format":"lesson", 
+            "events.correct":False}},
+        {"$group": {"_id": { "student_id": "$student_id", "chapter": "$events.chapter" }, "num_quiz_submits":{"$sum":1}}},
+        {"$out":"student_incorrect_quiz_submits_per_chapter"}
         ])
 
 def find_chapters():
@@ -41,24 +57,52 @@ def find_chapters():
     return consolidated
 
 def chapter_string_parser(s):
-    if s[0:7] == "Chapter":
+    out = ""
+    if s[0:7] == "Chapter" or s[0:4] == "Week":
         words = s.split('_')
-        s = words[0] + '_' + words[1]
-        return s
+        out = 'Chapter_' + words[1]
+        return out
+    elif s[0:4] == "week":
+        out = 'Chapter_'+s[-1:]
+        return out
+    elif s == "Unit_1_Introduction" or s == "Introduction":
+        return "Chapter_1"
+    elif s == "Performance" or s == "Schema_Design":
+        return "Chapter_3"
+    elif s == "Aggregation":
+        return "Chapter_5"
+    else:
+        print s
+
 
 def find_student_info(student_id, chapters):
-    cursor = db.student_num_quiz_submits_per_chapter.find({"_id.student_id":student_id})
-    
+    cursor_correct = db.student_correct_quiz_submits_per_chapter.find({"_id.student_id":student_id})
+    cursor_incorrect = db.student_incorrect_quiz_submits_per_chapter.find({"_id.student_id":student_id})
+
     file.write(str(student_id) +": {")
 
     d = {}
     for c in chapters:
-        d[c] = 0
+        d[c] = {}
+        d[c]['correct'] = 0
+        d[c]['incorrect'] = 0
+  
+    sum = 0
 
-    for doc in cursor:
+    for doc in cursor_correct:
+        sum = sum + 1
         chapter = chapter_string_parser(doc['_id']['chapter'])
         if (chapter):
-            d[chapter] = d[chapter] + 1
+            d[chapter]["correct"] = d[chapter]["correct"] + 1
+
+    for doc in cursor_incorrect:
+        sum = sum + 1
+        chapter = chapter_string_parser(doc['_id']['chapter'])
+        if (chapter):
+            d[chapter]["incorrect"] = d[chapter]["incorrect"] + 1
+
+    if student_id == 180925:
+        print sum
 
     for key in d:
         file.write("'" + key +"':" + str(d[key]) + ", ")
@@ -78,7 +122,9 @@ def run():
 
     chapters = find_chapters()
 
-    find_num_quizzes_per_chapter()
+    find_correct_quizzes_per_chapter()
+    find_incorrect_quizzes_per_chapter()
+
     for student in all_students:
         find_student_info(student, chapters)
 
