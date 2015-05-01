@@ -95,7 +95,7 @@ def run():
     find_avg_incorrect_quizzes()
     file.write(";\n")
 
-    file.write("var student_total_quiz_submits_data = {")
+    file.write("var student_quiz_data = {")
 
     all_students = find_all_students()
 

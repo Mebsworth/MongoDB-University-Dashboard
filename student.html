@@ -3,8 +3,12 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="input_data.js"></script>
 
-    <script type="text/javascript" src="data.js"></script>
-    <script type="text/javascript" src="data2.js"></script>
+    <script type="text/javascript" src="data/student_homework.js"></script>
+    <script type="text/javascript" src="data/student_hw_submits_per_chapter.js"></script>
+    <script type="text/javascript" src="data/student_num_assignments_completed.js"></script>
+    <script type="text/javascript" src="data/student_quiz_submits_per_chapter.js"></script>
+    <script type="text/javascript" src="data/student_quiz.js"></script>
+    
 
     <!-- Bootstrap -->
     <link href="dist/css/bootstrap.min.css" rel="stylesheet">
@@ -25,17 +29,23 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Quiz</h3>
+                      </div>
                     <div class="panel-body">
-                        <div id="columnchart_grouped" style="width: 800px; height: 400px;"></div>
+                        <div id="quiz_columnchart_grouped" style="width: 800px; height: 400px;"></div>
                     </div>
                 </div>
             </div>
-            
         </div> <!-- row 1 -->
         <div class="row">
             <div class="col-md-8">
                 <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Homework</h3>
+                      </div>
                     <div class="panel-body">
+                        <div id="hw_columnchart_grouped" style="width: 800px; height: 400px;"></div>
                     </div>
                 </div>
             </div>
@@ -45,80 +55,84 @@
         </div>
         <div class="row">
         </div>
-
-        
-        
-        
-        
     </div>
-  
-
   <div>
-    <p>
-
-
-
-        Ranking by Grade</p>
-  </div>
+</div>
 
 <script type="text/javascript">
 
+    var student_id = 180925;
+
     var s = document.getElementById("student_id");
-    s.innerHTML = s.innerHTML + dat1[1];
+    s.innerHTML = s.innerHTML + student_id;
 
     // $('.student_id').text(dat1[1]);
-    console.log("ID " + dat1[1]);
+    console.log("ID " + student_id);
 
-     google.load("visualization", "1", {packages:["corechart", "bar"]});
-     google.setOnLoadCallback(drawChart);
+    google.load("visualization", "1", {packages:["corechart", "bar"]});
+    google.setOnLoadCallback(drawQuizChart);
 
-     var options_grouped = {
-          title: "Comparing Student's Progress to Course Average",
-          colors: ['#3b5998', '#0099cc'],
-          width: 500,
-          height: 400,
-          bar: {groupWidth: "95%"},
-          legend: { position: "right" },
-        };
      
-     function drawChart() {
+    function drawQuizChart() {
+
+        var options_grouped = {
+            title: "Comparing Student to Course Average",
+            colors: ['#3b5998', '#0099cc'],
+            width: 500,
+            height: 400,
+            bar: {groupWidth: "95%"},
+            legend: { position: "right" },
+        };
         
         var data = new google.visualization.DataTable();
-        data.addColumn('number', 'Student');
-        data.addColumn('number', 'Average Student');
-        data.addColumn('number', 'Student ' + dat1[1]);
+        data.addColumn('string', 'Type');
+        data.addColumn('number', 'Average');
+        data.addColumn('number', 'Student ' + student_id);
 
-        console.log(dat1[0]);
-        console.log(dat2[0]);
+        var student = student_quiz_data[student_id];
+
         var input = [
-          [{v: 1, f:'Number of Completed Homework Assignments'}, dat2[0], dat2[2]], 
-          [{v: 2, f:'Number of Correct Homework Assignments'}, dat1[0], dat1[2]]]
-        // data.addRows([
-        //   [{v: 1, f: 'Student 1'}, 1, .25],
-        //   [{v: 2, f: 'Student 2'}, 2, .5],
-        //   [{v: 3, f:'Student 3'}, 3, 1],
-        //   [{v: 4, f: 'Student 4'}, 4, 2.25],
-        //   [{v: 5, f: 'Student 5'}, 5, 2.25],
-        //   [{v: 6, f: 'Student 6'}, 6, 3],
-        //   [{v: 7, f: 'Student 7'}, 7, 4],
-        //   [{v: 8, f: 'Student 8'}, 8, 5.25],
-        //   [{v: 9, f: 'Student 9'}, 9, 7.5],
-        //   [{v: 10, f: 'Student 10'}, 10, 10],
-        // ]);
+          ['Correct Quizzes', avg_correct_quizzes, student['correct']], 
+          ['Incorrect Quizzes', avg_incorrect_quizzes, student['incorrect']],
+          ['Correct On First Attempt', 1, 2]];
 
-        // data.addRows(dat);
         data.addRows(input);
 
-        // var view = new google.visualization.DataView(data);
-        // view.setColumns([0, 1,
-        //                  { calc: "stringify",
-        //                    sourceColumn: 1,
-        //                    type: "string",
-        //                    role: "annotation" },
-        //                  2]);
-        var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_grouped"));
+        var chart = new google.visualization.ColumnChart(document.getElementById("quiz_columnchart_grouped"));
         chart.draw(data, options_grouped);
-  }
+    }
+
+    google.load("visualization", "1", {packages:["corechart", "bar"]});
+    google.setOnLoadCallback(drawHWChart);
+
+    function drawHWChart() {
+
+        var options_grouped = {
+            title: "Comparing Student to Course Average",
+            colors: ['#3b5998', '#0099cc'],
+            width: 500,
+            height: 400,
+            bar: {groupWidth: "95%"},
+            legend: { position: "right" },
+        };
+        
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Type');
+        data.addColumn('number', 'Average');
+        data.addColumn('number', 'Student ' + student_id);
+
+        var student = student_homework_data[student_id];
+
+        var input = [
+          ['Correct Homework', avg_correct_homeworks, student['num_correct_hw']], 
+          ['Incorrect Homework', avg_incorrect_homeworks, student['num_incorrect_hw']],
+          ['Correct On First Attempt', avg_num_hws_first_attempt, student['first_attempt']]];
+
+        data.addRows(input);
+
+        var chart = new google.visualization.ColumnChart(document.getElementById("hw_columnchart_grouped"));
+        chart.draw(data, options_grouped);
+    }
 
   
   </script>

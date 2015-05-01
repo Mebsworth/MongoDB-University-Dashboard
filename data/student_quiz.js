@@ -1,6 +1,6 @@
 var avg_correct_quizzes = 5.28548190321;
 var avg_incorrect_quizzes = 5.04047384008;
-var student_total_quiz_submits_data = {183620: {'correct':0, 'incorrect': 0}, 
+var student_quiz_data = {183620: {'correct':0, 'incorrect': 0}, 
 174552: {'correct':0, 'incorrect': 0}, 
 187718: {'correct':0, 'incorrect': 0}, 
 178521: {'correct':0, 'incorrect': 0}, 
