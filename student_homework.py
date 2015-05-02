@@ -1,8 +1,8 @@
-import pymongo
+from pymongo import MongoClient
 import sys
 
 #establish a connection to the database
-connection = pymongo.Connection("mongodb://localhost", safe=True)
+connection = MongoClient()
 
 #get a handle to the track database
 db=connection.track
